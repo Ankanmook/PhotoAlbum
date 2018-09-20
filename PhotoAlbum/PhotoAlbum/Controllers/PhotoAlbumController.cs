@@ -22,9 +22,9 @@ namespace PhotoAlbum.Controllers
             return View();
         }
 
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            return Json(PhotoAlbumService.GetTable());
+            return Ok(await PhotoAlbumService.GetTable());
         }
 
     }

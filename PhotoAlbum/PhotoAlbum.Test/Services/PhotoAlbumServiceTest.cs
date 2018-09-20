@@ -6,20 +6,36 @@ using System.Text;
 using System.Threading.Tasks;
 using PhotoAlbum.DataType;
 using PhotoAlbum.Service;
+using Moq;
 
 namespace PhotoAlbum.Test.Services
 {
     public class PhotoAlbumServiceTest
     {
-        [Test]
-        public async Task GetPhotoAlbum()
+
+        Mock<IGenericSerivce> MockGenericSerivce { get; set; }
+
+        IGenericSerivce GenericSerivce { get; set; }
+
+        PhotoAlbumService PhotoAlbumService { get; set; }
+
+        [OneTimeSetUp]
+        public void Setup()
         {
-            IGenericSerivce genericSerivce = new GenericService();
+            MockGenericSerivce = new Mock<IGenericSerivce>();
+            GenericSerivce = new GenericService();
+            PhotoAlbumService = new PhotoAlbumService(new GenericService());
+        }
+
+        [Test]
+        public async Task GetPhotoAlbumIntegrationTest()
+        {
+            
 
             //Get Photo
-            var photos = await genericSerivce.GetResponse<List<Photo>>(Settings.Settings.PhotoAPI);
+            var photos = await GenericSerivce.GetResponse<List<Photo>>(Settings.Settings.PhotoAPI);
             //Get Album
-            var albums = await genericSerivce.GetResponse<List<Album>>(Settings.Settings.AlbumAPI);
+            var albums = await GenericSerivce.GetResponse<List<Album>>(Settings.Settings.AlbumAPI);
 
             List<PhotoAlbumType> photoAlbums = new List<PhotoAlbumType>();
 
@@ -52,16 +68,30 @@ namespace PhotoAlbum.Test.Services
 
         public async Task GetPhotoAlbumTest()
         {
-            PhotoAlbumService photoAlbumService = new PhotoAlbumService(new GenericService());
-            var photoAlbums = await photoAlbumService.GetPhotoAlbum();
+            var photoAlbums = await PhotoAlbumService.GetPhotoAlbum();
             Assert.IsTrue(photoAlbums.Count > 0);
         }
 
-        public async Task GetTable()
+        public async Task GetTableTest()
         {
-            PhotoAlbumService photoAlbumService = new PhotoAlbumService(new GenericService());
-            var jqueryTable = await photoAlbumService.GetTable();
+            var jqueryTable = await PhotoAlbumService.GetTable();
             Assert.IsTrue(jqueryTable.Data.Count > 0);
         }
+
+        public async Task GetPhotoAlbumUnitTest()
+        {
+            List<Photo> fakePhotos = new List<Photo>();
+            List<Album> fakeAlbums = new List<Album>();
+
+            MockGenericSerivce.Setup(m => m.GetResponse<List<Photo>>(Settings.Settings.PhotoAPI)).Returns(Task.FromResult(fakePhotos)); ;
+            MockGenericSerivce.Setup(m => m.GetResponse<List<Album>>(Settings.Settings.AlbumAPI)).Returns(Task.FromResult(fakeAlbums)); ;
+
+            PhotoAlbumService = new PhotoAlbumService(MockGenericSerivce.Object);
+            var photoAlbums = await PhotoAlbumService.GetPhotoAlbum();
+
+            MockGenericSerivce.Verify(m => m.GetResponse<List<Photo>>(Settings.Settings.PhotoAPI), Times.Once);
+            MockGenericSerivce.Verify(m => m.GetResponse<List<Album>>(Settings.Settings.AlbumAPI), Times.Once);
+        }
+
     }
 }

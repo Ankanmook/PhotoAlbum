@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PhotoAlbum.Service;
 
 namespace PhotoAlbum
 {
@@ -33,7 +34,17 @@ namespace PhotoAlbum
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            ConfigureAppServices(services);
         }
+
+        public void ConfigureAppServices(IServiceCollection services)
+        {
+            services.AddTransient<IGenericSerivce, GenericService>();
+            services.AddTransient<IPhotoAlbumService, PhotoAlbumService>();
+        }
+
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
