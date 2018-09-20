@@ -11,8 +11,6 @@ $(document).ready(function () {
             "datatype": "json"
         },
         columns: [
-            { AlbumId: "AlbumId" },
-            { PhotoId: "PhotoId" },
             { PhotoTitle: "Photo Title" },
             { AlbumName: "Album Name" },
             { ThumbnailUrl: "Thumbnail Image", render: getImg }

@@ -8,11 +8,12 @@ namespace PhotoAlbum.DataType
 {
     public class PhotoAlbumType
     {
-        public int AlbumId { get; set; }
-        public int PhotoId { get; set; }
         public string Title { get; set; }
         public string AlbumName { get; set; }
         public string ThumbnailUrl { get; set; }
+        public int AlbumId { get; set; }
+        public int PhotoId { get; set; }
+
         public string Url { get; set; }
         public int UserId { get; set; }
 
@@ -20,11 +21,11 @@ namespace PhotoAlbum.DataType
         {
             List<string> tableRow = new List<string>
             {
-                this.AlbumId.ToString(),
-                this.PhotoId.ToString(),
                 this.Title,
                 this.AlbumName,
                 this.ThumbnailUrl,
+                this.AlbumId.ToString(),
+                this.PhotoId.ToString(),
                 this.Url,
                 this.UserId.ToString()
             };
